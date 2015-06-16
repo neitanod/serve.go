@@ -1,16 +1,20 @@
 package main
 
 import (
+  "flag"
   "net"
   "net/http"
   "fmt"
 )
 
+var port = flag.String("port", "4701", "http service address")
+
 func main() {
+  flag.Parse()
 
   go echo_interfaces();
 
-  err := http.ListenAndServe(":8000", http.FileServer(http.Dir(".")))
+  err := http.ListenAndServe(":"+*port, http.FileServer(http.Dir(".")))
   if err != nil {
     fmt.Printf("error running webserver: %v", err)
   }
@@ -39,7 +43,7 @@ func echo_interfaces() {
         case *net.IPAddr:
           ip = v.IP
 			}
-      fmt.Printf("      http://%s:8000\n", ip)
+      fmt.Printf("      http://%s:%s\n", ip, *port)
     }
   }
 }
